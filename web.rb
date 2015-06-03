@@ -20,7 +20,7 @@ module Windy
 
 
 		get '/test' do
-			erb :index, locals: {title: 'Hello World'}
+			erb :example, locals: {title: 'Hello World'}
 		end
 
 		get '/data' do
