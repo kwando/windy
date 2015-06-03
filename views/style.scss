@@ -3,16 +3,24 @@ html, body{
 	padding: 0;
 	font-family: 'Helvetica', 'Arial', sans-serif;
 }
+body{
+  background-color: #3473A1;
+  color: #ecf0f1;
+}
 
 a, a:visted{
 	color: blue;
 }
-
+.page-container{
+  max-width: 78em;
+  margin: 0 auto;
+}
 table.forecast-table{
+  width: 100%;
   border-collapse: collapse;
   tr td{
 	font-size: 1em;
-	border: 1px solid #eee;
+	border: 1px solid rgba(255, 255, 255, 0.1);
 	padding: .5em 1em;
   }
   td.number{
