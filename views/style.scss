@@ -7,3 +7,25 @@ html, body{
 a, a:visted{
 	color: blue;
 }
+
+table.forecast-table{
+  border-collapse: collapse;
+  tr td{
+	font-size: 1em;
+	border: 1px solid #eee;
+	padding: .5em 1em;
+  }
+  td.number{
+	text-align: right;
+  }
+}
+
+.arrow-up {
+  width: 0;
+  height: 0;
+  border-left: .25em solid transparent;
+  border-right: .25em solid transparent;
+
+  border-bottom: 1em solid black;
+  margin-left:0;
+}

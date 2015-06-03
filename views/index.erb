@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html ng-app="windy" ng-controller="PageController as page">
+<head>
+  <title>{{page.title}}</title>
+  <link rel="stylesheet" href="/style.css"/>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.0/angular.min.js"></script>
+  <script type="text/javascript" charset="utf-8">
+      angular.module('windy', [])
+              .service('ForecastService', ['$http', function($http){
+                  var request = $http.get('/data').then(function(result){
+                      return result.data;
+                  });
+                  this.forecast = function(){
+                      return request;
+                  }
+              }])
+              .controller('PageController', ['ForecastService', function(ForecastService){
+                  var page = this;
+                  this.title = 'Kan jag åka båt?';
+                  this.forecast = ForecastService.forecast().then(function(forecast){
+                      page.forecast = forecast;
+                  })
+              }])
+              .directive('windArrow', [function(){
+                  return {
+                      template: '<div class="arrow-up" ng-style="{transform: \'rotate(\'+direction+\'deg)\'}"></div>',
+                      scope: {
+                          direction: '=direction'
+                      }
+                  }
+              }])
+              .directive('beaufortIndicator', [function(){
+                  return {
+                      template: '<div style="background-color: red;color:#fff;padding: .5em 1em;">{{value}}</div>',
+                      scope: {
+                          value: '=value'
+                      }
+                  }
+              }])
+  </script>
+</head>
+<body>
+<table class="forecast-table">
+  <tr ng-repeat="time in page.forecast track by time.time">
+    <td>{{::time.time}}</td>
+    <td>{{::time.latitude}}</td>
+    <td>{{::time.longitude}}</td>
+    <td class="number">{{::time.temperature.value}}&deg; C</td>
+    <td class="number">{{::time.windSpeed.mps |number:0}} m/s</td>
+    <td class="number">{{::time.windDirection.deg |number:0}}&deg;</td>
+    <td><wind-arrow direction="::time.windDirection.deg"></wind-arrow></td>
+    <td class="number">{{::time.windDirection.name}}</td>
+    <td class="number">{{::time.windSpeed.beaufort}}</td>
+    <td><beaufort-indicator value="::time.windSpeed.beaufort"></beaufort-indicator></td>
+    <td class="number">{{::time.pressure.value}} {{::time.pressure.unit}}</td>
+  </tr>
+</table>
+</body>
+</html>

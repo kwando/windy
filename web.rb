@@ -15,7 +15,7 @@ module Windy
 		WEATHER = WeatherGenerator.new
 
 		get '/' do
-			'hello world'
+			erb :index
 		end
 
 
