@@ -31,9 +31,14 @@
               }])
               .directive('beaufortIndicator', [function(){
                   return {
-                      template: '<div style="background-color: red;color:#fff;padding: .5em 1em;">{{value}}</div>',
+                      template: '<div class="beaufort-indicator" ng-class="cssClass">{{value}}</div>',
                       scope: {
                           value: '=value'
+                      },
+                      link: function(scope){
+                          scope.$watch('value', function(value){
+                              scope.cssClass = 'beaufort-'+(value||'unknown');
+                          });
                       }
                   }
               }])
