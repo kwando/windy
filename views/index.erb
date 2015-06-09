@@ -3,12 +3,26 @@
 <head>
   <title>{{page.title}}</title>
   <link rel="stylesheet" href="/style.css"/>
+  <script type="text/javascript" src="/assets/moment-with-locales-2.10.3.min.js"></script>
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.0/angular.min.js"></script>
   <script type="text/javascript" charset="utf-8">
+      moment.locale('sv');
       angular.module('windy', [])
               .service('ForecastService', ['$http', function($http){
                   var request = $http.get('/data').then(function(result){
-                      return result.data;
+                      var data = result.data;
+                      angular.forEach(data, function(data){
+                          var time = moment(data.time, 'YYYY-MM-DD HH:mm:ss Z')
+                          data.time = time.format('dddd, \\k\\l HH:mm \\[ D/M\\ ]');
+                          var day = time.day();
+                          var hour = time.hour();
+                          data.isWeekend = (day == 0 || day == 6);
+                          data.isWeekday = !data.isWeekend;
+                          data.isWorktime = data.isWeekday && (hour >= 8 && hour <= 17);
+                          data.isNight = hour > 22 || hour < 9;
+                          console.log(data);
+                      });
+                      return data;
                   });
                   this.forecast = function(){
                       return request;
@@ -37,7 +51,7 @@
                       },
                       link: function(scope){
                           scope.$watch('value', function(value){
-                              scope.cssClass = 'beaufort-'+(value||'unknown');
+                              scope.cssClass = 'beaufort-' + (value || 'unknown');
                           });
                       }
                   }
@@ -48,7 +62,7 @@
 <div class="page-container">
   <h1>Kan jag åka båt?</h1>
   <table class="forecast-table">
-    <tr ng-repeat="time in page.forecast track by time.time">
+    <tr ng-repeat="time in page.forecast track by $index" class="time" ng-class="{night: time.isNight, worktime: time.isWorktime, weekend: time.isWeekend}">
       <td>{{::time.time}}</td>
       <td>{{::time.latitude}}</td>
       <td>{{::time.longitude}}</td>
