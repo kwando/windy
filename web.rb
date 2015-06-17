@@ -8,7 +8,6 @@ require 'yr/api_client'
 require 'yr/forecast_parser'
 
 
-
 module Windy
 	class WebApp < Sinatra::Base
 		include JSONEncoder
@@ -23,12 +22,16 @@ module Windy
 			erb :example, locals: {title: 'Hello World'}
 		end
 
-		get '/data' do
-      data = YR::APIClient.new.forecast(latitude: 55.6188, longitude: 12.9076)
-			forecast = YR::ForecastParser.parse(data)
+    get '/data' do
+      begin
+        data = YR::APIClient.new.forecast(latitude: 55.6188, longitude: 12.9076)
+        forecast = YR::ForecastParser.parse(data)
 
-			json(forecast.serialize)
-		end
+        json(forecast.serialize)
+      rescue YR::APIClient::HTTPError => ex
+        json({error: ex.message}, status: 503)
+      end
+    end
 
 		get '/style.css' do
 			scss :style
