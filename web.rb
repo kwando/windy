@@ -7,6 +7,8 @@ require 'windy/weather_generator'
 require 'yr/api_client'
 require 'yr/forecast_parser'
 
+require 'tilt/erb'
+require 'tilt/sass'
 
 module Windy
 	class WebApp < Sinatra::Base
