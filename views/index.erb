@@ -4,10 +4,11 @@
   <title>{{page.title}}</title>
   <link rel="stylesheet" href="/style.css"/>
   <script type="text/javascript" src="/assets/moment-with-locales-2.10.3.min.js"></script>
-  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.0/angular.min.js"></script>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js"></script>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular-animate.min.js"></script>
   <script type="text/javascript" charset="utf-8">
       moment.locale('sv');
-      angular.module('windy', [])
+      angular.module('windy', ['ngAnimate'])
               .service('ForecastService', ['$http', function($http){
                   var request = $http.get('/data').then(function(result){
                       var data = result.data;
@@ -64,7 +65,6 @@
 </head>
 <body>
 <div class="page-container">
-  <h1>Kan jag åka båt?</h1>
   <div ng-if="page.message" class="page-message">{{page.message}}</div>
   <table class="forecast-table">
     <tr ng-repeat="time in page.forecast track by $index" class="time" ng-class="{night: time.isNight, worktime: time.isWorktime, weekend: time.isWeekend}">
