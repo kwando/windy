@@ -15,6 +15,7 @@ module YR
 
     def initialize
       @http = Hurley::Client.new('http://api.yr.no')
+      @http.request_options.timeout = 0.5
     end
 
     # Get weather forecast data from YR
@@ -27,6 +28,8 @@ module YR
       return response.body if response.success?
 
       raise HTTPError.new("could not fetch forecast data, got status #{response.status_code}:\n" << response.body, response.status_code, response)
+    rescue Hurley::ConnectionFailed => ex
+      raise Error.new(ex.message)
     end
   end
 end
