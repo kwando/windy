@@ -20,7 +20,6 @@
                           data.isWeekday = !data.isWeekend;
                           data.isWorktime = data.isWeekday && (hour >= 8 && hour <= 17);
                           data.isNight = hour > 22 || hour < 9;
-                          console.log(data);
                       });
                       return data;
                   });
@@ -31,8 +30,13 @@
               .controller('PageController', ['ForecastService', function(ForecastService){
                   var page = this;
                   this.title = 'Kan jag åka båt?';
+                  page.message = 'Hämtar väderdata.';
+
                   this.forecast = ForecastService.forecast().then(function(forecast){
+                      page.message = null;
                       page.forecast = forecast;
+                  }, function(){
+                      page.message = 'Väderdatan kunde inte hämtas. =/';
                   })
               }])
               .directive('windArrow', [function(){
@@ -61,6 +65,7 @@
 <body>
 <div class="page-container">
   <h1>Kan jag åka båt?</h1>
+  <div ng-if="page.message" class="page-message">{{page.message}}</div>
   <table class="forecast-table">
     <tr ng-repeat="time in page.forecast track by $index" class="time" ng-class="{night: time.isNight, worktime: time.isWorktime, weekend: time.isWeekend}">
       <td>{{::time.time}}</td>
