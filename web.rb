@@ -33,8 +33,10 @@ module Windy
         data = HTTPPool.limit { Circuit.use { YR::APIClient.new.forecast(latitude: 55.6188, longitude: 12.9076) } }
         forecast = YR::ForecastParser.parse(data)
         json(forecast.serialize)
-      rescue Windy::Circuit::Error, Windy::Bucket::NotTicketsError => ex
-        json({error: 'Backend is down'}, status: 503)
+      rescue Windy::Circuit::Error => ex
+        json({error: 'Gateway Error (circuit broken)'}, status: 503)
+      rescue Windy::Bucket::NotTicketsError => ex
+        json({error: 'Backend is down (bucket empty)'}, status: 503)
       rescue YR::APIClient::Error => ex
         json({error: ex.message}, status: 503)
       end
@@ -50,5 +52,3 @@ module Windy
     end
   end
 end
-
-
