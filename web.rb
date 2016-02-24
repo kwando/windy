@@ -22,6 +22,7 @@ module Windy
     end
 
     get '/test' do
+      sleep rand
       erb :example, locals: {title: 'Hello World'}
     end
 
