@@ -11,6 +11,7 @@ require 'yr/forecast_parser'
 
 require 'tilt/erb'
 require 'tilt/sass'
+require 'lru_redux'
 
 module Windy
   class WebApp < Sinatra::Base
@@ -27,13 +28,18 @@ module Windy
     end
 
     Circuit = Windy::Circuit.new(timeout: 5)
-    HTTPPool = Bucket.new(5)
+    HTTPPool = Bucket.new(1)
 
+    Cache = LruRedux::TTL::ThreadSafeCache.new(100, 5 * 60)
     get '/data' do
       begin
-        data = HTTPPool.limit { Circuit.use { YR::APIClient.new.forecast(latitude: 55.6188, longitude: 12.9076) } }
-        forecast = YR::ForecastParser.parse(data)
-        json(forecast.serialize)
+        data = Cache.getset('forecast'){
+          data = HTTPPool.limit { Circuit.use { YR::APIClient.new.forecast(latitude: 55.6188, longitude: 12.9076) } }
+          forecast = YR::ForecastParser.parse(data)
+          forecast.serialize
+        }
+
+        json(data)
       rescue Windy::Circuit::Error => ex
         json({error: 'Gateway Error (circuit broken)'}, status: 503)
       rescue Windy::Bucket::NotTicketsError => ex

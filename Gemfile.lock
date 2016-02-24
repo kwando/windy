@@ -17,6 +17,7 @@ GEM
       thor (~> 0.19.1)
     hurley (0.2)
     ice_nine (0.11.2)
+    lru_redux (1.1.0)
     oga (2.2)
       ast
       ruby-ll (~> 2.1)
@@ -60,9 +61,13 @@ PLATFORMS
 DEPENDENCIES
   foreman
   hurley
+  lru_redux
   oga
   puma
   rspec
   sass
   sinatra
   virtus
+
+BUNDLED WITH
+   1.11.2
