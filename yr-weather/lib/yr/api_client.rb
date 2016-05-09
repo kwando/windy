@@ -24,7 +24,7 @@ module YR
     #
     # Example URL: http://api.yr.no/weatherapi/locationforecast/1.9/?lat=60.10;lon=9.58;msl=70
     def forecast(latitude:, longitude:, msl: 2)
-      response = @http.get('/weatherapi/locationforecast/1.9/', lat: latitude, lon: longitude, msl: msl)
+      response = @http.get("/weatherapi/locationforecast/1.9/?lat=#{latitude}&lon=#{longitude}&msl=#{msl}")
       return response.body if response.success?
 
       raise HTTPError.new("could not fetch forecast data, got status #{response.status_code}:\n" << response.body, response.status_code, response)
